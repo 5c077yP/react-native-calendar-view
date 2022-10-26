@@ -7,6 +7,7 @@ import DateTimePicker, {
 import { useNavigation } from '@react-navigation/native';
 import { v4 as uuidv4 } from 'uuid';
 import * as Random from 'expo-random';
+import { startOfDay } from 'date-fns';
 
 import { Text, View } from '../components/Themed';
 import { useAddEvent } from '../context/SimpleStore';
@@ -21,11 +22,11 @@ export default function CreateCalendarEventScreen() {
   const navigation = useNavigation();
 
   const onChangeStartDate = (_e: DateTimePickerEvent, selectedDate?: Date) => {
-    selectedDate && setStartDate(selectedDate);
+    selectedDate && setStartDate(startOfDay(selectedDate));
   };
 
   const onChangeEndDate = (_e: DateTimePickerEvent, selectedDate?: Date) => {
-    selectedDate && setEndDate(selectedDate);
+    selectedDate && setEndDate(startOfDay(selectedDate));
   };
 
   const addEvent = useAddEvent();
@@ -36,11 +37,13 @@ export default function CreateCalendarEventScreen() {
       return;
     }
 
+    const validEndData = showEndDate ? endDate : startDate;
+
     await addEvent({
       id: uuidv4({ random: Random.getRandomBytes(16) }),
       title,
       startDate,
-      endDate,
+      endDate: validEndData,
     });
     navigation.goBack();
   };
@@ -52,9 +55,6 @@ export default function CreateCalendarEventScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
 
       <View style={{ flexDirection: 'row' }}>
         <Text>title:</Text>

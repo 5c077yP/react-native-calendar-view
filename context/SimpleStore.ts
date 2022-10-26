@@ -1,11 +1,15 @@
 import React, { useCallback, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Event as ExpoEvent } from 'expo-calendar';
 
 const EVENTS_STORAGE_KEY = '@my_events';
 
 // @see https://docs.expo.dev/versions/v46.0.0/sdk/calendar/#event
-export type Event = Pick<ExpoEvent, 'id' | 'startDate' | 'title' | 'endDate'>;
+export type Event = {
+  id: string;
+  title: string;
+  startDate: Date;
+  endDate: Date;
+};
 
 type Store = {
   events: Event[];
